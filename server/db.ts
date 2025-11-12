@@ -139,3 +139,59 @@ export async function getUploadsByUserId(userId: number) {
   const { desc } = await import("drizzle-orm");
   return db.select().from(uploads).where(eq(uploads.userId, userId)).orderBy(desc(uploads.createdAt));
 }
+
+// Funções para boletos
+export async function getBoletosByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const { boletos } = await import("../drizzle/schema");
+  const { desc } = await import("drizzle-orm");
+  return db.select().from(boletos).where(eq(boletos.userId, userId)).orderBy(desc(boletos.createdAt));
+}
+
+export async function getBoletoById(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const { boletos } = await import("../drizzle/schema");
+  const { and } = await import("drizzle-orm");
+  const result = await db.select().from(boletos)
+    .where(and(eq(boletos.id, id), eq(boletos.userId, userId)))
+    .limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createBoleto(boleto: { userId: number; nossoNumero: string; apiProvider: string; externalId?: string | null; customerName: string; customerEmail?: string | null; customerDocument?: string | null; value: number; dueDate: Date; status?: string; boletoUrl?: string | null; barcode?: string | null }) {
+  const db = await getDb();
+  if (!db) return;
+  const { boletos } = await import("../drizzle/schema");
+  const result = await db.insert(boletos).values(boleto);
+  return result;
+}
+
+export async function updateBoleto(id: number, userId: number, data: { customerName?: string; customerEmail?: string | null; customerDocument?: string | null; value?: number; dueDate?: Date; status?: string }) {
+  const db = await getDb();
+  if (!db) return;
+  const { boletos } = await import("../drizzle/schema");
+  const { and } = await import("drizzle-orm");
+  await db.update(boletos)
+    .set({ ...data, updatedAt: new Date() })
+    .where(and(eq(boletos.id, id), eq(boletos.userId, userId)));
+}
+
+export async function deleteBoleto(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) return;
+  const { boletos } = await import("../drizzle/schema");
+  const { and } = await import("drizzle-orm");
+  await db.delete(boletos).where(and(eq(boletos.id, id), eq(boletos.userId, userId)));
+}
+
+export async function cancelBoleto(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) return;
+  const { boletos } = await import("../drizzle/schema");
+  const { and } = await import("drizzle-orm");
+  await db.update(boletos)
+    .set({ status: 'cancelled', updatedAt: new Date() })
+    .where(and(eq(boletos.id, id), eq(boletos.userId, userId)));
+}

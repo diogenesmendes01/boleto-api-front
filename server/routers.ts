@@ -72,6 +72,81 @@ export const appRouter = router({
         };
       }),
   }),
+
+  boleto: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return db.getBoletosByUserId(ctx.user.id);
+    }),
+    getById: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ ctx, input }) => {
+        return db.getBoletoById(input.id, ctx.user.id);
+      }),
+    create: protectedProcedure
+      .input(z.object({
+        nossoNumero: z.string(),
+        apiProvider: z.string(),
+        customerName: z.string(),
+        customerEmail: z.string().optional(),
+        customerDocument: z.string().optional(),
+        value: z.number(),
+        dueDate: z.date(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // Mock: gera ID externo e URL do boleto
+        const externalId = `${input.apiProvider.toUpperCase()}-${Date.now()}`;
+        const boletoUrl = `https://mock-boleto.com/${externalId}`;
+        const barcode = `${Math.floor(Math.random() * 1e15)}`;
+        
+        await db.createBoleto({
+          userId: ctx.user.id,
+          ...input,
+          externalId,
+          boletoUrl,
+          barcode,
+          status: 'pending',
+        });
+        
+        return { success: true };
+      }),
+    update: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        customerName: z.string().optional(),
+        customerEmail: z.string().optional(),
+        customerDocument: z.string().optional(),
+        value: z.number().optional(),
+        dueDate: z.date().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const { id, ...data } = input;
+        await db.updateBoleto(id, ctx.user.id, data);
+        return { success: true };
+      }),
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        // Mock: cancela na API externa antes de deletar
+        const boleto = await db.getBoletoById(input.id, ctx.user.id);
+        if (boleto) {
+          // Simula chamada para API externa para cancelar
+          console.log(`[Mock] Cancelando boleto ${boleto.externalId} na API ${boleto.apiProvider}`);
+        }
+        await db.deleteBoleto(input.id, ctx.user.id);
+        return { success: true };
+      }),
+    cancel: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        // Mock: cancela na API externa
+        const boleto = await db.getBoletoById(input.id, ctx.user.id);
+        if (boleto) {
+          console.log(`[Mock] Cancelando boleto ${boleto.externalId} na API ${boleto.apiProvider}`);
+        }
+        await db.cancelBoleto(input.id, ctx.user.id);
+        return { success: true };
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

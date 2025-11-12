@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import ApiConfig from "./pages/ApiConfig";
 import Upload from "./pages/Upload";
+import Boletos from "./pages/Boletos";
 
 function Router() {
   return (
@@ -16,6 +17,7 @@ function Router() {
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/config"} component={ApiConfig} />
       <Route path={"/upload"} component={Upload} />
+      <Route path={"/boletos"} component={Boletos} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

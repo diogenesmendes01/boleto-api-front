@@ -36,3 +36,18 @@
 - [x] Layout com sidebar para navegação
 - [x] Estilo consistente com Tailwind
 - [x] Responsividade mobile
+
+## Gerenciamento de Boletos
+- [x] Schema do banco de dados para boletos
+- [x] Endpoints tRPC para listar boletos
+- [x] Endpoints tRPC para editar boleto
+- [x] Endpoints tRPC para excluir boleto
+- [x] Endpoints tRPC para cancelar boleto
+- [x] Tela de listagem de boletos com tabela
+- [x] Exibir campos: Nosso ID, API origem, valor, data criação, data vencimento
+- [x] Ícones de ação: editar, excluir, cancelar
+- [x] Modal de edição de boleto
+- [x] Modal de confirmação para exclusão
+- [x] Modal de confirmação para cancelamento
+- [x] Integração com mock de APIs (Asaas/Cobre Fácil)
+- [x] Adicionar rota de Boletos na navegação

@@ -59,3 +59,27 @@ export const uploads = mysqlTable("uploads", {
 
 export type Upload = typeof uploads.$inferSelect;
 export type InsertUpload = typeof uploads.$inferInsert;
+
+/**
+ * Boletos gerados pelas APIs
+ */
+export const boletos = mysqlTable("boletos", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  nossoNumero: varchar("nossoNumero", { length: 100 }).notNull(), // Nosso ID/Número
+  apiProvider: varchar("apiProvider", { length: 50 }).notNull(), // 'asaas' ou 'cobrefacil'
+  externalId: varchar("externalId", { length: 255 }), // ID retornado pela API externa
+  customerName: varchar("customerName", { length: 255 }).notNull(),
+  customerEmail: varchar("customerEmail", { length: 320 }),
+  customerDocument: varchar("customerDocument", { length: 20 }),
+  value: int("value").notNull(), // Valor em centavos
+  dueDate: timestamp("dueDate").notNull(), // Data de vencimento
+  status: varchar("status", { length: 20 }).notNull().default('pending'), // 'pending', 'paid', 'cancelled', 'overdue'
+  boletoUrl: text("boletoUrl"), // URL do boleto gerado
+  barcode: text("barcode"), // Código de barras
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Boleto = typeof boletos.$inferSelect;
+export type InsertBoleto = typeof boletos.$inferInsert;
