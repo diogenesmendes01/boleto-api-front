@@ -51,3 +51,10 @@
 - [x] Modal de confirmação para cancelamento
 - [x] Integração com mock de APIs (Asaas/Cobre Fácil)
 - [x] Adicionar rota de Boletos na navegação
+
+## Dados Mock para Testes
+- [x] Script de seed para popular banco de dados
+- [x] Dados mock de configurações de API
+- [x] Dados mock de uploads
+- [x] Dados mock de boletos com diferentes status
+- [x] Executar script e verificar dados no sistema
