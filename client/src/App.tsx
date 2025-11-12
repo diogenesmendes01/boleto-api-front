@@ -11,11 +11,15 @@ import Upload from "./pages/Upload";
 import Boletos from "./pages/Boletos";
 import UploadDetails from "./pages/UploadDetails";
 import BoletoDetails from "./pages/BoletoDetails";
+import Login from "./pages/Login";
+import Cadastro from "./pages/Cadastro";
 
 function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/login"} component={Login} />
+      <Route path={"/cadastro"} component={Cadastro} />
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/config"} component={ApiConfig} />
       <Route path={"/upload"} component={Upload} />

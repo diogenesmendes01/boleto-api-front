@@ -94,3 +94,17 @@
 - [x] Tornar boletos clicáveis na tela de Boletos
 - [x] Tornar boletos clicáveis na página de detalhes de upload
 - [x] Adicionar rota de detalhes de boleto
+
+## Telas de Login e Cadastro
+- [x] Criar tela de Login com email/senha
+- [x] Criar tela de Cadastro com validação
+- [ ] Adicionar recuperação de senha
+- [x] Implementar validação de formulários
+- [x] Adicionar feedback visual de erros
+
+## Migração tRPC → REST API
+- [ ] Criar endpoints REST no backend
+- [ ] Implementar autenticação JWT
+- [ ] Migrar chamadas do frontend para fetch/axios
+- [ ] Atualizar toda a documentação
+- [ ] Remover dependências do tRPC

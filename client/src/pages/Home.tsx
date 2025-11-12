@@ -40,11 +40,9 @@ export default function Home() {
               {APP_TITLE}
             </span>
           </div>
-          <Button asChild size="lg" className="shadow-lg hover:shadow-xl transition-all">
-            <a href={getLoginUrl()}>
-              Entrar
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </a>
+          <Button size="lg" className="shadow-lg hover:shadow-xl transition-all" onClick={() => setLocation('/login')}>
+            Entrar
+            <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>
       </header>
