@@ -86,3 +86,11 @@
 ## Logos de Empresas
 - [x] Substituir emojis por logos reais das empresas (Asaas e Cobre Fácil)
 - [x] Criar cards com logos em formato adequado
+
+## Página de Detalhes de Boleto
+- [x] Criar página de detalhes de boleto individual
+- [x] Mostrar todas as informações do boleto
+- [x] Adicionar ações de editar, cancelar e excluir
+- [x] Tornar boletos clicáveis na tela de Boletos
+- [x] Tornar boletos clicáveis na página de detalhes de upload
+- [x] Adicionar rota de detalhes de boleto

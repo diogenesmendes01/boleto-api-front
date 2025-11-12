@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { trpc } from "@/lib/trpc";
 import { Edit, Trash2, XCircle } from "lucide-react";
+import { useLocation } from "wouter";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -19,6 +20,7 @@ interface EditFormData {
 }
 
 export default function Boletos() {
+  const [, setLocation] = useLocation();
   const { data: boletos, isLoading, refetch } = trpc.boleto.list.useQuery();
   const utils = trpc.useUtils();
   
@@ -165,7 +167,15 @@ export default function Boletos() {
                   </TableHeader>
                   <TableBody>
                     {boletos.map((boleto) => (
-                      <TableRow key={boleto.id}>
+                      <TableRow 
+                        key={boleto.id}
+                        className="cursor-pointer hover:bg-muted"
+                        onClick={(e) => {
+                          // Não navegar se clicou em um botão de ação
+                          if ((e.target as HTMLElement).closest('button')) return;
+                          setLocation(`/boleto/${boleto.id}`);
+                        }}
+                      >
                         <TableCell className="font-medium">{boleto.nossoNumero}</TableCell>
                         <TableCell>
                           <span className="uppercase text-xs font-semibold">

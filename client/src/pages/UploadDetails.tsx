@@ -309,7 +309,11 @@ export default function UploadDetails() {
                   </TableHeader>
                   <TableBody>
                     {filteredBoletos.map((boleto) => (
-                      <TableRow key={boleto.id} className="hover:bg-muted/50">
+                      <TableRow 
+                        key={boleto.id} 
+                        className="hover:bg-muted/50 cursor-pointer"
+                        onClick={() => setLocation(`/boleto/${boleto.id}`)}
+                      >
                         <TableCell className="font-medium">{boleto.nossoNumero}</TableCell>
                         <TableCell>{boleto.customerName}</TableCell>
                         <TableCell className="font-semibold">{formatCurrency(boleto.value)}</TableCell>

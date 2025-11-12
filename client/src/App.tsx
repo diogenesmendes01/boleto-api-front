@@ -10,6 +10,7 @@ import ApiConfig from "./pages/ApiConfig";
 import Upload from "./pages/Upload";
 import Boletos from "./pages/Boletos";
 import UploadDetails from "./pages/UploadDetails";
+import BoletoDetails from "./pages/BoletoDetails";
 
 function Router() {
   return (
@@ -20,6 +21,7 @@ function Router() {
       <Route path={"/upload"} component={Upload} />
       <Route path={"/boletos"} component={Boletos} />
       <Route path={"/upload/:id"} component={UploadDetails} />
+      <Route path={"/boleto/:id"} component={BoletoDetails} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
