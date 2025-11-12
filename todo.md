@@ -108,3 +108,9 @@
 - [ ] Migrar chamadas do frontend para fetch/axios
 - [ ] Atualizar toda a documentação
 - [ ] Remover dependências do tRPC
+
+## Validação de CNPJ no Cadastro
+- [x] Adicionar campo de CNPJ no formulário de cadastro
+- [x] Implementar validação de CNPJ
+- [x] Adicionar máscara de formatação (00.000.000/0000-00)
+- [ ] Validar CNPJ no backend

@@ -16,6 +16,7 @@ export default function Cadastro() {
   
   const [formData, setFormData] = useState({
     companyName: '',
+    cnpj: '',
     name: '',
     email: '',
     password: '',
@@ -24,15 +25,69 @@ export default function Cadastro() {
 
   const [errors, setErrors] = useState({
     companyName: '',
+    cnpj: '',
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
 
+  const validateCNPJ = (cnpj: string) => {
+    // Remove caracteres não numéricos
+    const cleanCNPJ = cnpj.replace(/[^\d]/g, '');
+    
+    if (cleanCNPJ.length !== 14) return false;
+    
+    // Verifica se todos os dígitos são iguais
+    if (/^(\d)\1+$/.test(cleanCNPJ)) return false;
+    
+    // Validação dos dígitos verificadores
+    let size = cleanCNPJ.length - 2;
+    let numbers = cleanCNPJ.substring(0, size);
+    const digits = cleanCNPJ.substring(size);
+    let sum = 0;
+    let pos = size - 7;
+    
+    for (let i = size; i >= 1; i--) {
+      sum += parseInt(numbers.charAt(size - i)) * pos--;
+      if (pos < 2) pos = 9;
+    }
+    
+    let result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+    if (result !== parseInt(digits.charAt(0))) return false;
+    
+    size = size + 1;
+    numbers = cleanCNPJ.substring(0, size);
+    sum = 0;
+    pos = size - 7;
+    
+    for (let i = size; i >= 1; i--) {
+      sum += parseInt(numbers.charAt(size - i)) * pos--;
+      if (pos < 2) pos = 9;
+    }
+    
+    result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+    if (result !== parseInt(digits.charAt(1))) return false;
+    
+    return true;
+  };
+
+  const formatCNPJ = (value: string) => {
+    const cleanValue = value.replace(/[^\d]/g, '');
+    if (cleanValue.length <= 14) {
+      return cleanValue
+        .replace(/(\d{2})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1/$2')
+        .replace(/(\d{4})(\d)/, '$1-$2');
+    }
+    return value;
+  };
+
   const validateForm = () => {
     const newErrors = {
       companyName: '',
+      cnpj: '',
       name: '',
       email: '',
       password: '',
@@ -41,6 +96,12 @@ export default function Cadastro() {
 
     if (!formData.companyName) {
       newErrors.companyName = 'Nome da empresa é obrigatório';
+    }
+
+    if (!formData.cnpj) {
+      newErrors.cnpj = 'CNPJ é obrigatório';
+    } else if (!validateCNPJ(formData.cnpj)) {
+      newErrors.cnpj = 'CNPJ inválido';
     }
 
     if (!formData.name) {
@@ -86,6 +147,7 @@ export default function Cadastro() {
         },
         body: JSON.stringify({
           companyName: formData.companyName,
+          cnpj: formData.cnpj.replace(/[^\d]/g, ''),
           name: formData.name,
           email: formData.email,
           password: formData.password,
@@ -163,6 +225,31 @@ export default function Cadastro() {
                 </div>
                 {errors.companyName && (
                   <p className="text-sm text-red-500">{errors.companyName}</p>
+                )}
+              </div>
+
+              {/* CNPJ */}
+              <div className="space-y-2">
+                <Label htmlFor="cnpj">CNPJ da Empresa</Label>
+                <div className="relative">
+                  <Building2 className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    id="cnpj"
+                    type="text"
+                    placeholder="00.000.000/0000-00"
+                    className={`pl-10 ${errors.cnpj ? 'border-red-500' : ''}`}
+                    value={formData.cnpj}
+                    onChange={(e) => {
+                      const formatted = formatCNPJ(e.target.value);
+                      setFormData({ ...formData, cnpj: formatted });
+                      setErrors({ ...errors, cnpj: '' });
+                    }}
+                    disabled={isLoading}
+                    maxLength={18}
+                  />
+                </div>
+                {errors.cnpj && (
+                  <p className="text-sm text-red-500">{errors.cnpj}</p>
                 )}
               </div>
 
