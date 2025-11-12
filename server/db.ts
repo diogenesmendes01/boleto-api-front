@@ -89,4 +89,53 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// Funções para configurações de API
+export async function getApiConfigurationsByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const { apiConfigurations } = await import("../drizzle/schema");
+  return db.select().from(apiConfigurations).where(eq(apiConfigurations.userId, userId));
+}
+
+export async function getApiConfigurationByUserAndProvider(userId: number, apiProvider: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const { apiConfigurations } = await import("../drizzle/schema");
+  const { and } = await import("drizzle-orm");
+  const result = await db.select().from(apiConfigurations)
+    .where(and(eq(apiConfigurations.userId, userId), eq(apiConfigurations.apiProvider, apiProvider)))
+    .limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function upsertApiConfiguration(config: { userId: number; apiProvider: string; isActive: number; apiKey?: string | null; apiSecret?: string | null; additionalConfig?: string | null }) {
+  const db = await getDb();
+  if (!db) return;
+  const { apiConfigurations } = await import("../drizzle/schema");
+  const existing = await getApiConfigurationByUserAndProvider(config.userId, config.apiProvider);
+  
+  if (existing) {
+    await db.update(apiConfigurations)
+      .set({ ...config, updatedAt: new Date() })
+      .where(eq(apiConfigurations.id, existing.id));
+  } else {
+    await db.insert(apiConfigurations).values(config);
+  }
+}
+
+// Funções para uploads
+export async function createUpload(upload: { userId: number; apiProvider: string; fileName: string; fileUrl: string; status: string; result?: string | null }) {
+  const db = await getDb();
+  if (!db) return;
+  const { uploads } = await import("../drizzle/schema");
+  const result = await db.insert(uploads).values(upload);
+  return result;
+}
+
+export async function getUploadsByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const { uploads } = await import("../drizzle/schema");
+  const { desc } = await import("drizzle-orm");
+  return db.select().from(uploads).where(eq(uploads.userId, userId)).orderBy(desc(uploads.createdAt));
+}
