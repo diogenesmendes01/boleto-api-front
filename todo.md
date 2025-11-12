@@ -58,3 +58,27 @@
 - [x] Dados mock de uploads
 - [x] Dados mock de boletos com diferentes status
 - [x] Executar script e verificar dados no sistema
+
+## Melhorias de UI/UX
+- [x] Melhorar página inicial (Home) com animações e gradientes
+- [x] Aprimorar Dashboard com cards mais atrativos
+- [x] Adicionar skeleton loaders em todas as páginas
+- [x] Melhorar tela de Configuração de APIs com melhor organização
+- [ ] Implementar drag & drop na tela de Upload
+- [ ] Adicionar filtros e busca na tela de Boletos
+- [x] Melhorar feedback visual de ações (toasts, loading states)
+- [x] Adicionar transições suaves entre páginas
+- [x] Melhorar responsividade mobile
+- [x] Adicionar badges e indicadores visuais
+
+## Página de Detalhes de Upload
+- [x] Criar schema para vincular boletos com uploads
+- [x] Adicionar campo uploadId na tabela de boletos
+- [x] Criar página de detalhes de upload
+- [x] Mostrar informações do upload (arquivo, data, API, status)
+- [x] Listar todos os boletos gerados pelo upload
+- [x] Adicionar filtros por período (7, 15, 30 dias)
+- [x] Adicionar filtro por status de boleto
+- [x] Adicionar filtro por API
+- [x] Tornar uploads no dashboard clicáveis
+- [x] Atualizar seed para vincular boletos com uploads

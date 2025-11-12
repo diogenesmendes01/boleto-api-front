@@ -44,6 +44,16 @@ export const appRouter = router({
     list: protectedProcedure.query(async ({ ctx }) => {
       return db.getUploadsByUserId(ctx.user.id);
     }),
+    getById: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ ctx, input }) => {
+        return db.getUploadById(input.id, ctx.user.id);
+      }),
+    getBoletos: protectedProcedure
+      .input(z.object({ uploadId: z.number() }))
+      .query(async ({ ctx, input }) => {
+        return db.getBoletosByUploadId(input.uploadId);
+      }),
     create: protectedProcedure
       .input(z.object({
         apiProvider: z.string(),

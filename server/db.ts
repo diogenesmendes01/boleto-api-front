@@ -195,3 +195,24 @@ export async function cancelBoleto(id: number, userId: number) {
     .set({ status: 'cancelled', updatedAt: new Date() })
     .where(and(eq(boletos.id, id), eq(boletos.userId, userId)));
 }
+
+export async function getUploadById(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const { uploads } = await import("../drizzle/schema");
+  const { and } = await import("drizzle-orm");
+  const result = await db.select().from(uploads)
+    .where(and(eq(uploads.id, id), eq(uploads.userId, userId)))
+    .limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getBoletosByUploadId(uploadId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const { boletos } = await import("../drizzle/schema");
+  const { desc } = await import("drizzle-orm");
+  return db.select().from(boletos)
+    .where(eq(boletos.uploadId, uploadId))
+    .orderBy(desc(boletos.createdAt));
+}

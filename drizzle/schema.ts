@@ -66,6 +66,7 @@ export type InsertUpload = typeof uploads.$inferInsert;
 export const boletos = mysqlTable("boletos", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(),
+  uploadId: int("uploadId"), // ID do upload que gerou este boleto (opcional)
   nossoNumero: varchar("nossoNumero", { length: 100 }).notNull(), // Nosso ID/Número
   apiProvider: varchar("apiProvider", { length: 50 }).notNull(), // 'asaas' ou 'cobrefacil'
   externalId: varchar("externalId", { length: 255 }), // ID retornado pela API externa
