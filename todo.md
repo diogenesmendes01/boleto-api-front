@@ -114,3 +114,13 @@
 - [x] Implementar validação de CNPJ
 - [x] Adicionar máscara de formatação (00.000.000/0000-00)
 - [ ] Validar CNPJ no backend
+
+## Integração com API REST do Backend
+- [x] Criar serviço de API REST no frontend (api.ts)
+- [x] Implementar autenticação com JWT
+- [x] Criar endpoints para importação em lote
+- [x] Atualizar tela de Upload para usar nova API
+- [x] Criar tela de acompanhamento de importações
+- [x] Adicionar polling para status de importação
+- [x] Implementar retry de importações falhadas
+- [ ] Substituir todas as chamadas tRPC por REST

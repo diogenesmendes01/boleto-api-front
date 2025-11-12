@@ -7,12 +7,13 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import ApiConfig from "./pages/ApiConfig";
-import Upload from "./pages/Upload";
+import UploadNew from "./pages/UploadNew";
 import Boletos from "./pages/Boletos";
 import UploadDetails from "./pages/UploadDetails";
 import BoletoDetails from "./pages/BoletoDetails";
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
+import ImportStatus from "./pages/ImportStatus";
 
 function Router() {
   return (
@@ -22,10 +23,11 @@ function Router() {
       <Route path={"/cadastro"} component={Cadastro} />
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/config"} component={ApiConfig} />
-      <Route path={"/upload"} component={Upload} />
+      <Route path={"/upload"} component={UploadNew} />
       <Route path={"/boletos"} component={Boletos} />
       <Route path={"/upload/:id"} component={UploadDetails} />
       <Route path={"/boleto/:id"} component={BoletoDetails} />
+      <Route path={"/import/:id"} component={ImportStatus} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
