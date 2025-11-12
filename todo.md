@@ -82,3 +82,7 @@
 - [x] Adicionar filtro por API
 - [x] Tornar uploads no dashboard clicáveis
 - [x] Atualizar seed para vincular boletos com uploads
+
+## Logos de Empresas
+- [x] Substituir emojis por logos reais das empresas (Asaas e Cobre Fácil)
+- [x] Criar cards com logos em formato adequado

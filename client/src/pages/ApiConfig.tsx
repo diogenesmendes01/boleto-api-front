@@ -22,13 +22,13 @@ const API_PROVIDERS: ApiProviderConfig[] = [
     provider: 'asaas',
     name: 'Asaas',
     description: 'Plataforma completa de pagamentos e cobranças online com boletos, cartão e PIX',
-    logo: '🏦',
+    logo: '/asaas-logo.jpg',
   },
   {
     provider: 'cobrefacil',
     name: 'Cobre Fácil',
     description: 'Sistema de cobrança e gestão financeira para empresas de todos os tamanhos',
-    logo: '💳',
+    logo: '/cobrefacil-logo.png',
   },
 ];
 
@@ -157,7 +157,9 @@ export default function ApiConfig() {
                 <CardHeader>
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-center gap-4 flex-1">
-                      <div className="text-5xl">{apiProvider.logo}</div>
+                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-white dark:bg-gray-100 flex items-center justify-center p-2 border-2 border-gray-200 dark:border-gray-300">
+                        <img src={apiProvider.logo} alt={`${apiProvider.name} logo`} className="w-full h-full object-contain" />
+                      </div>
                       <div className="space-y-1 flex-1">
                         <CardTitle className="text-2xl flex items-center gap-2">
                           {apiProvider.name}
