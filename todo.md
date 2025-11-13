@@ -126,7 +126,16 @@
 - [ ] Substituir todas as chamadas tRPC por REST
 
 ## Git e Repositório
-- [ ] Inicializar repositório Git
-- [ ] Criar repositório remoto boleto-api-front
-- [ ] Fazer commit inicial
+- [x] Inicializar repositório Git
+- [x] Criar repositório remoto boleto-api-front
+- [x] Fazer commit inicial
+- [x] Push para GitHub
+
+## Deploy no Coolify
+- [x] Criar Dockerfile para produção
+- [ ] Criar docker-compose.yml
+- [x] Configurar variáveis de ambiente (.env.example)
+- [x] Criar README com instruções
+- [ ] Testar build local
 - [ ] Push para GitHub
+- [ ] Configurar no Coolify
