@@ -124,3 +124,9 @@
 - [x] Adicionar polling para status de importação
 - [x] Implementar retry de importações falhadas
 - [ ] Substituir todas as chamadas tRPC por REST
+
+## Git e Repositório
+- [ ] Inicializar repositório Git
+- [ ] Criar repositório remoto boleto-api-front
+- [ ] Fazer commit inicial
+- [ ] Push para GitHub
