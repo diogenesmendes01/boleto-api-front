@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  boletoapi-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    container_name: boletoapi-frontend
+    ports:
+      - "80:80"
+    environment:
+      # Coolify gerencia essas variáveis automaticamente
+      - VIRTUAL_HOST=${VIRTUAL_HOST:-www.boletoapi.com}
+      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST:-www.boletoapi.com}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL:-admin@boletoapi.com}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-H", "Host: localhost", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    # Recursos otimizados para Coolify
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+        reservations:
+          memory: 128M
+          cpus: '0.25'
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
+    name: web

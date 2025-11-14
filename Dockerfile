@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@9
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
@@ -18,30 +18,76 @@ COPY . .
 # Build the application
 RUN pnpm run build
 
-# Production stage
-FROM node:22-alpine
+# Production stage - Nginx para servir arquivos estáticos
+FROM nginx:1.25-alpine
 
-WORKDIR /app
+# Instalar curl para healthcheck
+RUN apk add --no-cache curl
 
-# Install pnpm
-RUN npm install -g pnpm
+# Copiar arquivos buildados
+COPY --from=builder /app/dist/public /usr/share/nginx/html
 
-# Copy package files
-COPY package.json pnpm-lock.yaml ./
+# Copiar configuração customizada do nginx
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Install production dependencies only
-RUN pnpm install --prod --frozen-lockfile
+# Criar configuração genérica do servidor (Coolify gerencia o domínio)
+RUN echo 'server {\
+    listen 80;\
+    server_name _;\
+    root /usr/share/nginx/html;\
+    index index.html;\
+    \
+    # Configuração SPA - redirecionar todas as rotas para index.html\
+    location / {\
+        try_files $uri $uri/ /index.html;\
+    }\
+    \
+    # Configuração de segurança\
+    add_header X-Frame-Options "SAMEORIGIN" always;\
+    add_header X-XSS-Protection "1; mode=block" always;\
+    add_header X-Content-Type-Options "nosniff" always;\
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;\
+    add_header Content-Security-Policy "default-src '\''self'\'' http: https: data: blob: '\''unsafe-inline'\''" always;\
+    \
+    # Configuração de cache\
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {\
+        expires 1y;\
+        add_header Cache-Control "public, immutable";\
+    }\
+    \
+    # API proxy (opcional)\
+    location /api/ {\
+        proxy_pass https://api.boletoapi.com/api/;\
+        proxy_set_header Host $host;\
+        proxy_set_header X-Real-IP $remote_addr;\
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\
+        proxy_set_header X-Forwarded-Proto $scheme;\
+    }\
+    \
+    # Logs\
+    access_log /var/log/nginx/access.log;\
+    error_log /var/log/nginx/error.log;\
+}' > /etc/nginx/conf.d/default.conf
 
-# Copy built files from builder
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/client/dist ./client/dist
-COPY --from=builder /app/drizzle ./drizzle
+# Expor porta 80 (Coolify gerencia a exposição externa)
+EXPOSE 80
 
-# Expose port
-EXPOSE 3000
+# Health check aprimorado
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f -H "Host: localhost" http://127.0.0.1/ || exit 1
 
-# Set environment to production
-ENV NODE_ENV=production
+# Criar usuário não-root para segurança
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nextjs -u 1001
 
-# Start the application
-CMD ["node", "dist/_core/index.js"]
+# Ajustar permissões
+RUN chown -R nextjs:nodejs /usr/share/nginx/html && \
+    chown -R nextjs:nodejs /var/cache/nginx && \
+    chown -R nextjs:nodejs /var/log/nginx && \
+    chown -R nextjs:nodejs /etc/nginx/conf.d
+
+# Mudar para usuário não-root
+USER nextjs
+
+# Iniciar nginx
+CMD ["nginx", "-g", "daemon off;"]

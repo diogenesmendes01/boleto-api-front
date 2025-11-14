@@ -66,7 +66,7 @@ export default function Home() {
             </h1>
             
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto animate-fade-in-up animation-delay-200">
-              ConectaAPI simplifica a gestão de múltiplas integrações de pagamento.
+              BoletoAPI simplifica a gestão de múltiplas integrações de pagamento.
               Configure, envie planilhas e acompanhe tudo em tempo real com segurança e praticidade.
             </p>
             
@@ -196,7 +196,7 @@ export default function Home() {
             <Shield className="h-16 w-16 mx-auto text-primary" />
             <h2 className="text-4xl font-bold">Pronto para começar?</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Junte-se a empresas que já simplificaram sua gestão de pagamentos com o ConectaAPI
+              Junte-se a empresas que já simplificaram sua gestão de pagamentos com o BoletoAPI
             </p>
             <Button size="lg" asChild className="text-lg px-8 py-6 shadow-xl hover:shadow-2xl transition-all">
               <a href={getLoginUrl()}>

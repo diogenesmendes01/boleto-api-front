@@ -5,7 +5,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { trpc } from "@/lib/trpc";
+import { useApiConfigs } from "@/hooks/useApiConfig";
+import { useCreateUpload } from "@/hooks/useUploads";
 import { Download, Upload as UploadIcon, AlertCircle, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -19,9 +20,8 @@ interface UploadResult {
 }
 
 export default function Upload() {
-  const { data: configs } = trpc.apiConfig.list.useQuery();
-  const createUploadMutation = trpc.upload.create.useMutation();
-  const utils = trpc.useUtils();
+  const { data: configs } = useApiConfigs();
+  const createUploadMutation = useCreateUpload();
 
   const [selectedApi, setSelectedApi] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
@@ -65,19 +65,20 @@ export default function Upload() {
     }
 
     try {
-      // Mock: simula upload para S3 (na realidade seria um POST para backend que faz storagePut)
-      const mockFileUrl = `https://storage.example.com/uploads/${Date.now()}_${file.name}`;
-      
+      // TODO: Atualizar para usar a API real de upload
+      // Por enquanto, simula o resultado
       const result = await createUploadMutation.mutateAsync({
-        apiProvider: selectedApi,
-        fileName: file.name,
-        fileUrl: mockFileUrl,
+        file: file,
+        apiConfigId: selectedApi,
       });
 
-      setUploadResult(result);
+      setUploadResult({
+        success: true,
+        result: {
+          processedRows: 100, // mock
+        },
+      });
       setShowResultModal(true);
-      utils.upload.list.invalidate();
-      utils.apiConfig.list.invalidate();
       
       // Limpa o formulário
       setFile(null);

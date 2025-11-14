@@ -1,0 +1,42 @@
+{
+  "name": "BoletoAPI Frontend",
+  "description": "Frontend React para o sistema BoletoAPI - Gestão de boletos com integração Asaas e Cobre Fácil",
+  "version": "1.0.0",
+  "services": [
+    {
+      "name": "boletoapi-frontend",
+      "image": "boletoapi-frontend",
+      "internal_port": 80,
+      "external_port": 80,
+      "environment": {
+        "VIRTUAL_HOST": "${DOMAIN}",
+        "LETSENCRYPT_HOST": "${DOMAIN}",
+        "LETSENCRYPT_EMAIL": "admin@${DOMAIN}"
+      },
+      "healthcheck": {
+        "enabled": true,
+        "path": "/",
+        "interval": 30,
+        "timeout": 10,
+        "retries": 3
+      },
+      "resources": {
+        "cpu": {
+          "limit": "500m",
+          "reservation": "250m"
+        },
+        "memory": {
+          "limit": "256Mi",
+          "reservation": "128Mi"
+        }
+      }
+    }
+  ],
+  "domains": [
+    {
+      "name": "www.boletoapi.com",
+      "ssl": true,
+      "redirect_to_https": true
+    }
+  ]
+}

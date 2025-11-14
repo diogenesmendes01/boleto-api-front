@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
-import { trpc } from "@/lib/trpc";
+import { useApiConfigs, useUpsertApiConfig } from "@/hooks/useApiConfig";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CheckCircle2, XCircle, Eye, EyeOff } from "lucide-react";
@@ -33,9 +33,8 @@ const API_PROVIDERS: ApiProviderConfig[] = [
 ];
 
 export default function ApiConfig() {
-  const { data: configs, isLoading, refetch } = trpc.apiConfig.list.useQuery();
-  const upsertMutation = trpc.apiConfig.upsert.useMutation();
-  const utils = trpc.useUtils();
+  const { data: configs, isLoading, refetch } = useApiConfigs();
+  const upsertMutation = useUpsertApiConfig();
 
   const [formData, setFormData] = useState<Record<string, { apiKey: string; apiSecret: string; isActive: boolean }>>({});
   const [showSecrets, setShowSecrets] = useState<Record<string, { key: boolean; secret: boolean }>>({});
@@ -46,16 +45,14 @@ export default function ApiConfig() {
 
   const handleToggle = async (provider: string, checked: boolean) => {
     const config = getConfigForProvider(provider);
-    
+
     try {
       await upsertMutation.mutateAsync({
-        apiProvider: provider,
-        isActive: checked ? 1 : 0,
+        provider: provider as 'asaas' | 'cobrefacil',
         apiKey: config?.apiKey || '',
-        apiSecret: config?.apiSecret || '',
+        apiToken: config?.apiSecret || '', // mapeando apiSecret para apiToken
       });
-      
-      utils.apiConfig.list.invalidate();
+
       toast.success(checked ? 'API ativada com sucesso' : 'API desativada com sucesso');
     } catch (error) {
       toast.error('Erro ao atualizar configuração');
@@ -68,13 +65,11 @@ export default function ApiConfig() {
 
     try {
       await upsertMutation.mutateAsync({
-        apiProvider: provider,
-        isActive: getConfigForProvider(provider)?.isActive || 0,
+        provider: provider as 'asaas' | 'cobrefacil',
         apiKey: data.apiKey,
-        apiSecret: data.apiSecret,
+        apiToken: data.apiSecret, // mapeando apiSecret para apiToken
       });
-      
-      utils.apiConfig.list.invalidate();
+
       toast.success('Configuração salva com sucesso');
       
       setFormData(prev => {
@@ -140,7 +135,7 @@ export default function ApiConfig() {
         <div className="space-y-2">
           <h1 className="text-4xl font-bold tracking-tight">Configuração de APIs</h1>
           <p className="text-lg text-muted-foreground">
-            Configure as APIs que você deseja integrar ao ConectaAPI
+            Configure as APIs que você deseja integrar ao BoletoAPI
           </p>
         </div>
 

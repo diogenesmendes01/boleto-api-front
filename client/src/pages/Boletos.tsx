@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { trpc } from "@/lib/trpc";
+import { useBoletos, useUpdateBoleto, useDeleteBoleto, useCancelBoleto } from "@/hooks/useBoletos";
 import { Edit, Trash2, XCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import { useState } from "react";
@@ -21,12 +21,11 @@ interface EditFormData {
 
 export default function Boletos() {
   const [, setLocation] = useLocation();
-  const { data: boletos, isLoading, refetch } = trpc.boleto.list.useQuery();
-  const utils = trpc.useUtils();
-  
-  const updateMutation = trpc.boleto.update.useMutation();
-  const deleteMutation = trpc.boleto.delete.useMutation();
-  const cancelMutation = trpc.boleto.cancel.useMutation();
+  const { data: boletos, isLoading, refetch } = useBoletos();
+
+  const updateMutation = useUpdateBoleto();
+  const deleteMutation = useDeleteBoleto();
+  const cancelMutation = useCancelBoleto();
 
   const [editingBoleto, setEditingBoleto] = useState<number | null>(null);
   const [editFormData, setEditFormData] = useState<EditFormData>({
@@ -56,15 +55,16 @@ export default function Boletos() {
 
     try {
       await updateMutation.mutateAsync({
-        id: editingBoleto,
-        customerName: editFormData.customerName,
-        customerEmail: editFormData.customerEmail || undefined,
-        customerDocument: editFormData.customerDocument || undefined,
-        value: Math.round(editFormData.value * 100), // Converte reais para centavos
-        dueDate: new Date(editFormData.dueDate),
+        id: editingBoleto.toString(),
+        data: {
+          customerName: editFormData.customerName,
+          customerEmail: editFormData.customerEmail || undefined,
+          customerDocument: editFormData.customerDocument || undefined,
+          value: Math.round(editFormData.value * 100), // Converte reais para centavos
+          dueDate: new Date(editFormData.dueDate).toISOString(),
+        },
       });
 
-      utils.boleto.list.invalidate();
       toast.success('Boleto atualizado com sucesso');
       setEditingBoleto(null);
     } catch (error) {
@@ -74,8 +74,7 @@ export default function Boletos() {
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteMutation.mutateAsync({ id });
-      utils.boleto.list.invalidate();
+      await deleteMutation.mutateAsync(id.toString());
       toast.success('Boleto excluído com sucesso');
       setDeleteConfirmId(null);
     } catch (error) {
@@ -85,8 +84,7 @@ export default function Boletos() {
 
   const handleCancel = async (id: number) => {
     try {
-      await cancelMutation.mutateAsync({ id });
-      utils.boleto.list.invalidate();
+      await cancelMutation.mutateAsync(id.toString());
       toast.success('Boleto cancelado com sucesso');
       setCancelConfirmId(null);
     } catch (error) {

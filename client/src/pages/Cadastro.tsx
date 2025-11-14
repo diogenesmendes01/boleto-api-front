@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { APP_LOGO, APP_TITLE } from "@/const";
+import { register } from "@/lib/api";
 import { Eye, EyeOff, Loader2, Mail, Lock, Building2, User } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
@@ -140,30 +141,41 @@ export default function Cadastro() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          companyName: formData.companyName,
-          cnpj: formData.cnpj.replace(/[^\d]/g, ''),
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        }),
+      // Usar a função register da API externa
+      await register({
+        razaoSocial: formData.companyName,
+        cnpj: formData.cnpj.replace(/[^\d]/g, ''),
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
       });
 
-      const data = await response.json();
+      toast.success('Cadastro realizado com sucesso!', {
+        description: 'Um email de verificação foi enviado para seu endereço. Verifique sua caixa de entrada e spam.',
+        duration: 6000,
+      });
+      setLocation(`/email-verification?email=${encodeURIComponent(formData.email)}`);
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro ao criar conta');
+    } catch (error: any) {
+      console.error('Registration error:', error);
+
+      // Verificar códigos de erro específicos
+      if (error.code === 'CNPJ_ALREADY_EXISTS') {
+        toast.error('Este CNPJ já está cadastrado no sistema. Por favor, faça login ou recupere sua senha.');
+        return;
       }
 
-      toast.success('Conta criada com sucesso!');
-      setLocation('/login');
-      
-    } catch (error: any) {
+      if (error.code === 'EMAIL_ALREADY_EXISTS') {
+        toast.error('Este e-mail já está cadastrado no sistema. Por favor, faça login ou recupere sua senha.');
+        return;
+      }
+
+      if (error.code === 'VALIDATION_ERROR') {
+        toast.error(error.message || 'Dados inválidos. Verifique os campos e tente novamente.');
+        return;
+      }
+
+      // Fallback para erros genéricos
       toast.error(error.message || 'Erro ao criar conta');
     } finally {
       setIsLoading(false);

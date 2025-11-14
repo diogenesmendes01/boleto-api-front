@@ -13,6 +13,10 @@ import UploadDetails from "./pages/UploadDetails";
 import BoletoDetails from "./pages/BoletoDetails";
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
+import EmailVerification from "./pages/EmailVerification";
+import EmailVerify from "./pages/EmailVerify";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import ImportStatus from "./pages/ImportStatus";
 
 function Router() {
@@ -21,6 +25,10 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/login"} component={Login} />
       <Route path={"/cadastro"} component={Cadastro} />
+      <Route path={"/email-verification"} component={EmailVerification} />
+      <Route path={"/email-verify"} component={EmailVerify} />
+      <Route path={"/forgot-password"} component={ForgotPassword} />
+      <Route path={"/reset-password"} component={ResetPassword} />
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/config"} component={ApiConfig} />
       <Route path={"/upload"} component={UploadNew} />

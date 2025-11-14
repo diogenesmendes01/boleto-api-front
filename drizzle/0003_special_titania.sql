@@ -1,1 +1,0 @@
-ALTER TABLE `boletos` ADD `uploadId` int;

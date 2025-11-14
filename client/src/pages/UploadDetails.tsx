@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { trpc } from "@/lib/trpc";
+import { useUpload, useUploadBoletos } from "@/hooks/useUploads";
 import { ArrowLeft, FileText, Calendar, CheckCircle2, XCircle, Clock, Filter } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useLocation, useRoute } from "wouter";
@@ -12,10 +12,10 @@ import { useLocation, useRoute } from "wouter";
 export default function UploadDetails() {
   const [, params] = useRoute("/upload/:id");
   const [, setLocation] = useLocation();
-  const uploadId = params?.id ? parseInt(params.id) : 0;
+  const uploadId = params?.id || "";
 
-  const { data: upload, isLoading: uploadLoading } = trpc.upload.getById.useQuery({ id: uploadId });
-  const { data: boletos, isLoading: boletosLoading } = trpc.upload.getBoletos.useQuery({ uploadId });
+  const { data: upload, isLoading: uploadLoading } = useUpload(uploadId);
+  const { data: boletos, isLoading: boletosLoading } = useUploadBoletos(uploadId);
 
   const [periodFilter, setPeriodFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");

@@ -5,19 +5,19 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { trpc } from "@/lib/trpc";
-import { 
-  ArrowLeft, 
-  Calendar, 
-  CheckCircle2, 
-  Clock, 
-  CreditCard, 
-  Edit, 
-  FileText, 
-  Hash, 
-  Mail, 
-  Trash2, 
-  User, 
+import { useBoleto, useUpdateBoleto, useDeleteBoleto, useCancelBoleto } from "@/hooks/useBoletos";
+import {
+  ArrowLeft,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  CreditCard,
+  Edit,
+  FileText,
+  Hash,
+  Mail,
+  Trash2,
+  User,
   XCircle,
   AlertTriangle,
   Download,
@@ -30,13 +30,12 @@ import { toast } from "sonner";
 export default function BoletoDetails() {
   const [, params] = useRoute("/boleto/:id");
   const [, setLocation] = useLocation();
-  const boletoId = params?.id ? parseInt(params.id) : 0;
+  const boletoId = params?.id || "";
 
-  const { data: boleto, isLoading } = trpc.boleto.getById.useQuery({ id: boletoId });
-  const updateMutation = trpc.boleto.update.useMutation();
-  const deleteMutation = trpc.boleto.delete.useMutation();
-  const cancelMutation = trpc.boleto.cancel.useMutation();
-  const utils = trpc.useUtils();
+  const { data: boleto, isLoading } = useBoleto(boletoId);
+  const updateMutation = useUpdateBoleto();
+  const deleteMutation = useDeleteBoleto();
+  const cancelMutation = useCancelBoleto();
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -113,15 +112,15 @@ export default function BoletoDetails() {
     try {
       await updateMutation.mutateAsync({
         id: boletoId,
-        customerName: editForm.customerName,
-        customerEmail: editForm.customerEmail || undefined,
-        customerDocument: editForm.customerDocument || undefined,
-        value: Math.round(parseFloat(editForm.value) * 100),
-        dueDate: new Date(editForm.dueDate),
+        data: {
+          customerName: editForm.customerName,
+          customerEmail: editForm.customerEmail || undefined,
+          customerDocument: editForm.customerDocument || undefined,
+          value: Math.round(parseFloat(editForm.value) * 100),
+          dueDate: new Date(editForm.dueDate).toISOString(),
+        },
       });
 
-      utils.boleto.getById.invalidate({ id: boletoId });
-      utils.boleto.list.invalidate();
       setShowEditModal(false);
       toast.success('Boleto atualizado com sucesso');
     } catch (error) {
@@ -131,7 +130,7 @@ export default function BoletoDetails() {
 
   const handleDelete = async () => {
     try {
-      await deleteMutation.mutateAsync({ id: boletoId });
+      await deleteMutation.mutateAsync(boletoId);
       toast.success('Boleto excluído com sucesso');
       setLocation('/boletos');
     } catch (error) {
@@ -141,9 +140,7 @@ export default function BoletoDetails() {
 
   const handleCancel = async () => {
     try {
-      await cancelMutation.mutateAsync({ id: boletoId });
-      utils.boleto.getById.invalidate({ id: boletoId });
-      utils.boleto.list.invalidate();
+      await cancelMutation.mutateAsync(boletoId);
       setShowCancelModal(false);
       toast.success('Boleto cancelado com sucesso');
     } catch (error) {

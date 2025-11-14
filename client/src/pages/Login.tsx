@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { APP_LOGO, APP_TITLE } from "@/const";
+import { login } from "@/lib/api";
 import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
@@ -55,30 +56,44 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
+      // Usar a função login da API externa
+      const data = await login({
+        email: formData.email,
+        password: formData.password,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Erro ao fazer login');
-      }
-
-      // Salvar token no localStorage
-      localStorage.setItem('token', data.token);
-      
+      // Salvar token no localStorage (feito automaticamente pela função login)
       toast.success('Login realizado com sucesso!');
       setLocation('/dashboard');
       
     } catch (error: any) {
+      console.error('Login error:', error);
+
+      // Verificar códigos de erro específicos
+      if (error.code === 'EMAIL_NOT_VERIFIED') {
+        toast.error('Seu e-mail ainda não foi verificado. Por favor, verifique sua caixa de entrada e clique no link de ativação.');
+        // Usar dados do erro para construir URL com informações completas
+        const emailToVerify = error.data?.email || formData.email;
+        const companyId = error.data?.companyId || '';
+        const urlParams = new URLSearchParams({
+          email: emailToVerify,
+          ...(companyId && { companyId })
+        });
+        setLocation(`/email-verification?${urlParams.toString()}`);
+        return;
+      }
+
+      if (error.code === 'INVALID_CREDENTIALS') {
+        toast.error('E-mail ou senha incorretos. Por favor, verifique seus dados e tente novamente.');
+        return;
+      }
+
+      if (error.code === 'ACCOUNT_DISABLED') {
+        toast.error('Sua conta foi desativada. Entre em contato com o suporte para mais informações.');
+        return;
+      }
+
+      // Fallback para erros genéricos
       toast.error(error.message || 'Erro ao fazer login');
     } finally {
       setIsLoading(false);
@@ -151,7 +166,7 @@ export default function Login() {
                     type="button"
                     variant="link"
                     className="px-0 text-sm"
-                    onClick={() => setLocation('/recuperar-senha')}
+                    onClick={() => setLocation('/forgot-password')}
                   >
                     Esqueceu a senha?
                   </Button>

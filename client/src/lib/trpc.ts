@@ -1,4 +1,6 @@
-import { createTRPCReact } from "@trpc/react-query";
-import type { AppRouter } from "../../../server/routers";
+// TODO: Migrar para API REST direta usando axios
+// O projeto foi convertido para usar backend externo em https://api.boletoapi.com/
+// Removido tRPC já que não temos mais backend local
 
-export const trpc = createTRPCReact<AppRouter>();
+// Por enquanto, exportando um objeto vazio para evitar erros de import
+export const trpc = {};

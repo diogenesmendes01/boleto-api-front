@@ -1,19 +1,21 @@
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { trpc } from "@/lib/trpc";
+import { useUploads } from "@/hooks/useUploads";
+import { useApiConfigs } from "@/hooks/useApiConfig";
+import { useBoletos } from "@/hooks/useBoletos";
 import { Activity, FileUp, Settings, TrendingUp, Clock, CheckCircle, ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
-  const { data: uploads, isLoading: uploadsLoading } = trpc.upload.list.useQuery();
-  const { data: apiConfigs, isLoading: configsLoading } = trpc.apiConfig.list.useQuery();
-  const { data: boletos, isLoading: boletosLoading } = trpc.boleto.list.useQuery();
+  const { data: uploads, isLoading: uploadsLoading } = useUploads();
+  const { data: apiConfigs, isLoading: configsLoading } = useApiConfigs();
+  const { data: boletos, isLoading: boletosLoading } = useBoletos();
 
   const totalUploads = uploads?.length || 0;
   const successfulUploads = uploads?.filter(u => u.status === 'success').length || 0;
-  const activeApis = apiConfigs?.filter(c => c.isActive === 1).length || 0;
+  const activeApis = apiConfigs?.length || 0; // TODO: Implementar lógica de API ativa na API externa
   const totalBoletos = boletos?.length || 0;
   const boletosPendentes = boletos?.filter(b => b.status === 'pending').length || 0;
   const boletosPagos = boletos?.filter(b => b.status === 'paid').length || 0;

@@ -1,0 +1,12 @@
+# Arquivos ignorados durante o deploy no Coolify
+node_modules/
+dist/
+.git/
+.env*
+*.log
+coverage/
+.vscode/
+.idea/
+screenshots/
+*.md
+!README.md
