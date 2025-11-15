@@ -67,7 +67,7 @@ docker build -t boletoapi-frontend .
 
 2. **Executar o container**
 ```bash
-docker run -d -p 3200:3200 --name boletoapi-frontend boletoapi-frontend
+docker run -d -p 3200:3200 --name boleto-frontend boleto-frontend
 ```
 
 3. **Verificar se está rodando**
@@ -83,8 +83,8 @@ O Dockerfile já está configurado para o domínio `www.boletoapi.com`. Para usa
 # Com variável de ambiente
 docker run -d -p 3200:3200 \
   -e VIRTUAL_HOST=www.boletoapi.com \
-  --name boletoapi-frontend \
-  boletoapi-frontend
+  --name boleto-frontend \
+  boleto-frontend
 ```
 
 ### Opção 2: Deploy Manual
