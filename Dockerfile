@@ -29,7 +29,7 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 # Criar configuração genérica do servidor (Coolify gerencia o domínio)
 RUN echo 'server {\
-    listen 80;\
+    listen 3200;\
     server_name _;\
     root /usr/share/nginx/html;\
     index index.html;\
@@ -71,7 +71,7 @@ EXPOSE 3200
 
 # Health check aprimorado
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD curl -f -H "Host: localhost" http://127.0.0.1/ || exit 1
+    CMD curl -f -H "Host: localhost" http://127.0.0.1:3200/ || exit 1
 
 # Ajustar permissões para nginx (rodando como root por compatibilidade)
 RUN chown -R nginx:nginx /usr/share/nginx/html && \
