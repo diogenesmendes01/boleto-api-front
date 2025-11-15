@@ -66,8 +66,8 @@ RUN echo 'server {\
     error_log /var/log/nginx/error.log;\
 }' > /etc/nginx/conf.d/default.conf
 
-# Expor porta 80 (Coolify gerencia a exposição externa)
-EXPOSE 80
+# Expor porta 3200 (Coolify gerencia a exposição externa)
+EXPOSE 3200
 
 # Health check aprimorado
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \

@@ -9,7 +9,7 @@ services:
         - BUILDKIT_INLINE_CACHE=1
     container_name: boletoapi-frontend
     ports:
-      - "80:80"
+      - "3200:3200"
     environment:
       # Coolify gerencia essas variáveis automaticamente
       - VIRTUAL_HOST=${VIRTUAL_HOST:-www.boletoapi.com}

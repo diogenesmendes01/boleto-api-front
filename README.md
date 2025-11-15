@@ -67,7 +67,7 @@ docker build -t boletoapi-frontend .
 
 2. **Executar o container**
 ```bash
-docker run -d -p 80:80 --name boletoapi-frontend boletoapi-frontend
+docker run -d -p 3200:3200 --name boletoapi-frontend boletoapi-frontend
 ```
 
 3. **Verificar se está rodando**
@@ -81,7 +81,7 @@ O Dockerfile já está configurado para o domínio `www.boletoapi.com`. Para usa
 
 ```bash
 # Com variável de ambiente
-docker run -d -p 80:80 \
+docker run -d -p 3200:3200 \
   -e VIRTUAL_HOST=www.boletoapi.com \
   --name boletoapi-frontend \
   boletoapi-frontend
@@ -162,7 +162,7 @@ npm run dev
 docker build -t boletoapi-frontend-dev .
 
 # Executar em modo desenvolvimento
-docker run -d -p 3000:80 --name boletoapi-dev boletoapi-frontend-dev
+docker run -d -p 3000:3200 --name boletoapi-dev boletoapi-frontend-dev
 
 # Verificar se está rodando
 curl http://localhost:3000
@@ -178,7 +178,7 @@ docker network create web
 docker-compose up -d
 
 # Verificar se está rodando
-curl http://localhost
+curl http://localhost:3200
 ```
 
 ## 📝 Estrutura do Projeto

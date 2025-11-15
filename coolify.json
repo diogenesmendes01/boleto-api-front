@@ -6,8 +6,8 @@
     {
       "name": "boletoapi-frontend",
       "image": "boletoapi-frontend",
-      "internal_port": 80,
-      "external_port": 80,
+      "internal_port": 3200,
+      "external_port": 3200,
       "environment": {
         "VIRTUAL_HOST": "${DOMAIN}",
         "LETSENCRYPT_HOST": "${DOMAIN}",
