@@ -73,18 +73,13 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD curl -f -H "Host: localhost" http://127.0.0.1/ || exit 1
 
-# Criar usuário não-root para segurança
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
-
-# Ajustar permissões
-RUN chown -R nextjs:nodejs /usr/share/nginx/html && \
-    chown -R nextjs:nodejs /var/cache/nginx && \
-    chown -R nextjs:nodejs /var/log/nginx && \
-    chown -R nextjs:nodejs /etc/nginx/conf.d
-
-# Mudar para usuário não-root
-USER nextjs
+# Ajustar permissões para nginx (rodando como root por compatibilidade)
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+    chown -R nginx:nginx /var/cache/nginx && \
+    chown -R nginx:nginx /var/log/nginx && \
+    chown -R nginx:nginx /etc/nginx/conf.d && \
+    touch /var/run/nginx.pid && \
+    chown nginx:nginx /var/run/nginx.pid
 
 # Iniciar nginx
 CMD ["nginx", "-g", "daemon off;"]
