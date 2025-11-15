@@ -13,7 +13,7 @@ RUN npm ci --only=production=false --legacy-peer-deps
 COPY . .
 
 # Build the application
-RUN pnpm run build
+RUN npm run build
 
 # Production stage - Nginx para servir arquivos estáticos
 FROM nginx:1.25-alpine
